@@ -1,0 +1,125 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model IEnumerable<Cakeshop.Models.Cake>
+
+
+@{
+    ViewData["Title"] = "歡迎光臨甜蜜蛋糕坊";
+}
+
+@* --- Bootstrap Carousel 開始 --- *@
+<div id="homeCakeCarousel" class="carousel slide mb-4" data-bs-ride="carousel" data-bs-interval="5000">
+    @* data-bs-interval 設定自動輪播間隔 (毫秒) *@
+
+    @* 1. 指示器 (小圓點) *@
+    @if (Model != null && Model.Any())
+    {
+        <div class="carousel-indicators">
+            @for (int i = 0; i < Model.Count(); i++)
+            {
+                <button type="button" data-bs-target="#homeCakeCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" aria-label="Slide @(i + 1)"></button>
+            }
+        </div>
+    }
+    else
+    {
+        @* 如果沒有動態資料，可以放靜態指示器 *@
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#homeCakeCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#homeCakeCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#homeCakeCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+    }
+
+
+    @* 2. 輪播項目 (圖片和文字) *@
+    <div class="carousel-inner">
+        @if (Model != null && Model.Any())
+        {
+            var first = true;
+            foreach (var cake in Model)
+            {
+                <div class="carousel-item @(first ? "active" : "")">
+                    @* 圖片 - 設定固定高度和 object-fit 以統一外觀 *@
+                    <img src="@(cake.ImageUrl ?? "/images/placeholder.png")" class="d-block w-100" alt="@cake.Name" style="height: 450px; object-fit: cover; object-position: center;">
+                    @* 說明文字 (可選) - 使用 d-none d-md-block 在小螢幕隱藏 *@
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-3 rounded">
+                        @* 加上半透明背景提高可讀性 *@
+                        <h5>@cake.Name</h5>
+                        <p>@cake.Description</p>
+                        <a asp-controller="Cakes" asp-action="Details" asp-route-id="@cake.Id" class="btn btn-light btn-sm">查看詳情</a>
+                    </div>
+                </div>
+                first = false; // 只有第一個項目需要 active
+            }
+        }
+        else
+        {
+            @* 如果沒有從 Controller 傳遞資料，可以放靜態圖片 *@
+            <div class="carousel-item active">
+                <img src="/images/carousel-1.jpg" class="d-block w-100" alt="特色蛋糕 1" style="height: 450px; object-fit: cover;">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-3 rounded">
+                    <h5>歡慶時刻的最佳選擇</h5>
+                    <p>為您重要的日子增添甜蜜色彩。</p>
+                    <a asp-controller="Cakes" asp-action="Index" class="btn btn-light btn-sm">立即選購</a>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="/images/carousel-2.jpg" class="d-block w-100" alt="精緻下午茶" style="height: 450px; object-fit: cover;">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-3 rounded">
+                    <h5>享受悠閒的午茶時光</h5>
+                    <p>多款精緻蛋糕與甜點，滿足您的味蕾。</p>
+                    <a asp-controller="Cakes" asp-action="Index" class="btn btn-light btn-sm">探索美味</a>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="/images/carousel-3.jpg" class="d-block w-100" alt="客製化蛋糕" style="height: 450px; object-fit: cover;">
+                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 p-3 rounded">
+                    <h5>獨一無二的客製驚喜</h5>
+                    <p>讓我們為您打造專屬的美味記憶。</p>
+                    @* 可以連結到聯絡頁面或說明頁面 *@
+                    <a asp-controller="Home" asp-action="Privacy" class="btn btn-light btn-sm">了解更多</a>
+                </div>
+            </div>
+            @* 請確保 /images/carousel-1.jpg, carousel-2.jpg, carousel-3.jpg 存在於 wwwroot/images/ *@
+        }
+    </div>
+
+    @* 3. 控制按鈕 (上一張/下一張) *@
+    <button class="carousel-control-prev" type="button" data-bs-target="#homeCakeCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#homeCakeCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</div>
+@* --- Bootstrap Carousel 結束 --- *@
+
+@* --- 在 Carousel 下方可以加入其他首頁內容 --- *@
+<div class="row text-center mt-5">
+    <div class="col-md-4">
+        <i class="bi bi-cake2 fs-1 text-primary"></i> @* 使用 Bootstrap Icon *@
+        <h2 class="fw-normal">精選食材</h2>
+        <p>我們堅持使用最新鮮、最優質的原料，為您烘焙每一份幸福。</p>
+        @* <p><a class="btn btn-secondary" href="#">了解更多 »</a></p> *@
+    </div><!-- /.col-md-4 -->
+    <div class="col-md-4">
+        <i class="bi bi-heart-pulse fs-1 text-danger"></i>
+        <h2 class="fw-normal">用心製作</h2>
+        <p>每一款蛋糕都由經驗豐富的師傅精心製作，傳遞手作的溫度。</p>
+        @* <p><a class="btn btn-secondary" href="#">我們的故事 »</a></p> *@
+    </div><!-- /.col-md-4 -->
+    <div class="col-md-4">
+        <i class="bi bi-truck fs-1 text-success"></i>
+        <h2 class="fw-normal">新鮮配送</h2>
+        <p>提供便捷的訂購與配送服務，將美味直接送到您手中。</p>
+        @*  <p><a class="btn btn-secondary" href="#">配送範圍 »</a></p> *@
+    </div><!-- /.col-md-4 -->
+</div><!-- /.row -->
+
+<hr class="featurette-divider mt-5">
+
+@* 可再加入其他圖文介紹區塊 *@
